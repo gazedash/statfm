@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import './Track.css'
 
-class Artist extends Component {
+class Track extends Component {
   renderImage() {
     const { image } = this.props;
 
@@ -9,6 +10,18 @@ class Artist extends Component {
       <div className="image">
         <img src={image}/>
       </div>
+    );
+  }
+
+  renderArtist() {
+    const { artist, artistUrl } = this.props;
+
+    return (
+      <a href={artistUrl}>
+        <span>
+          {artist}
+        </span>
+      </a>
     );
   }
 
@@ -25,20 +38,23 @@ class Artist extends Component {
   render() {
     return (
       <div className="root">
+        {this.renderArtist()}
         <a href={this.props.url}>
           {this.renderImage()}
           {this.renderTitle()}
         </a>
       </div>
-    )
+    );
   }
 }
 
-Artist.propTypes = {
-  title: PropTypes.string.isRequired,
+Track.propTypes = {
+  artist: PropTypes.string.isRequired,
+  artistUrl: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
 };
-Artist.defaultProps = {};
+Track.defaultProps = {};
 
-export default Artist;
+export default Track;

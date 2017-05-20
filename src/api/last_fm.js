@@ -1,11 +1,8 @@
+import _ from 'lodash';
+import { fetchWrapper } from './common';
 import { paramsToString } from '../utils/index';
 export const LAST_FM = 'https://ws.audioscrobbler.com';
 export const API_VERSION = '2.0';
-// export const GET_SIMILAR_ARTISTS = "artist.getsimilar";
-// export const GET_ARTIST_CORRECTION = "artist.getcorrection";
-// export const GET_POPULAR_TRACKS = "artist.getTopTracks";
-// export const GET_TOP_ALBUMS = "artist.getTopAlbums";
-// export const GET_ALBUM_INFO = "album.getInfo";
 
 export const methods = {
     USER_GET_LOVED_TRACKS: 'user.getLovedTracks',
@@ -18,6 +15,9 @@ export class LastFm {
     constructor({ api_key, version }) {
         this.api_key = api_key;
         this.version = version ? version : API_VERSION;
+        _.each(methods, (val, key) => {
+          this[key] = (params) => fetchWrapper(this.get({ method: val, params }));
+        })
     }
 
     buildQuery(method) {

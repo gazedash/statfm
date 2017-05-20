@@ -2,12 +2,29 @@ import React, {
   Component,
 } from 'react';
 import PropTypes from 'prop-types';
+import Artist from './Artist';
 
 class TopArtists extends Component {
+  renderList() {
+    const { items } = this.props;
+    return (
+      <div>
+        {items.map(item =>
+          <Artist
+            key={item.url}
+            title={item.name}
+            url={item.url}
+            image={item.image[3]['#text']}
+          />
+        )}
+      </div>
+    );
+  }
+
   render() {
     return (
       <div>
-        {JSON.stringify(this.props.items)}
+        {this.renderList()}
       </div>
     );
   }
