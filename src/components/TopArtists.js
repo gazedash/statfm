@@ -14,7 +14,7 @@ class TopArtists extends Component {
             key={item.url}
             title={item.name}
             url={item.url}
-            image={item.image[3]['#text']}
+            image={item.image}
           />
         )}
       </div>

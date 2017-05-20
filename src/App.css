@@ -6,6 +6,11 @@
   border-bottom: 1px solid black;
 }
 
+.scrollable {
+  height: 84vh;
+  overflow-y: scroll;
+}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;

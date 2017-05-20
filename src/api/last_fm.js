@@ -25,6 +25,7 @@ export class LastFm {
     };
 
     get({ method, params }) {
+      console.log(this.buildQuery(method) + paramsToString(params));
         return this.buildQuery(method) + paramsToString(params);
     }
 }

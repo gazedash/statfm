@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Track from './Track/Track';
+import Track from '../Track/Track';
+import './LovedTracks.css'
 
 class LovedTracks extends Component {
   renderList() {
@@ -14,7 +15,7 @@ class LovedTracks extends Component {
             url={item.url}
             artist={item.artist.name}
             artistUrl={item.artist.url}
-            image={item.image[3]['#text']}
+            image={item.image}
           />
         )}
       </div>
@@ -23,7 +24,7 @@ class LovedTracks extends Component {
 
   render() {
     return (
-      <div>
+      <div className="lovedtracks">
         {this.renderList()}
       </div>
     );
