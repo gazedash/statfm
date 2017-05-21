@@ -7,7 +7,7 @@ class Artist extends Component {
 
     return (
       <div className="image">
-        <img src={image}/>
+        <img className="image" src={image}/>
       </div>
     );
   }
@@ -16,9 +16,9 @@ class Artist extends Component {
     const { title } = this.props;
 
     return (
-      <div>
+      <span className="title">
         {title}
-      </div>
+      </span>
     );
   }
 

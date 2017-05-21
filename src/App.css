@@ -11,6 +11,34 @@
   overflow-y: scroll;
 }
 
+.form {
+  display: flex;
+}
+
+.submit {
+  flex: 1;
+  align-self: center;
+}
+
+.search {
+  flex: 1;
+}
+
+.user {
+  flex: 1;
+  align-self: center;
+  text-align: right;
+  padding-right: 10px;
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  padding: 0 10px;
+}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;

@@ -1,0 +1,108 @@
+.group {
+  position: relative;
+}
+
+.custom-input {
+  font-size: 18px;
+  padding: 10px 10px 10px 13px;
+  display: block;
+  width: 250px;
+  border: none;
+  border-bottom: 1px solid #757575;
+}
+
+.custom-input:focus {
+  outline: none;
+}
+
+.custom-input ~ label {
+  color: #999;
+  font-size: 18px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+/* active state */
+.custom-input:focus ~ label, .custom-input:valid ~ label {
+  display: none;
+}
+
+/* BOTTOM BARS ================================= */
+.bar {
+  position: relative;
+  display: block;
+  width: 250px;
+}
+
+.bar:before, .bar:after {
+  content: '';
+  height: 2px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: #000;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.bar:before {
+  left: 50%;
+}
+
+.bar:after {
+  right: 50%;
+}
+
+/* active state */
+.custom-input:focus ~ .bar:before, .custom-input:focus ~ .bar:after {
+  width: 55%;
+}
+
+/* active state */
+.custom-input:focus ~ .highlight {
+  -webkit-animation: inputHighlighter 0.3s ease;
+  -moz-animation: inputHighlighter 0.3s ease;
+  animation: inputHighlighter 0.3s ease;
+}
+
+/* ANIMATIONS ================ */
+@-webkit-keyframes inputHighlighter {
+  from {
+    background: #000;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}
+
+@-moz-keyframes inputHighlighter {
+  from {
+    background: #000;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}
+
+@keyframes inputHighlighter {
+  from {
+    background: #000;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}
+
+.custom-input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+  box-shadow: 0 0 0 100px #fff inset;
+}

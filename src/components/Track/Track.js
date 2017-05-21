@@ -18,7 +18,7 @@ class Track extends Component {
 
     return (
       <a href={artistUrl}>
-        <span>
+        <span className="title">
           {artist}
         </span>
       </a>
@@ -29,7 +29,7 @@ class Track extends Component {
     const { title } = this.props;
 
     return (
-      <div>
+      <div className="title">
         {title}
       </div>
     );

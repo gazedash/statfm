@@ -5,6 +5,8 @@ import './App.css';
 import LovedTracks from './components/LovedTracks/LovedTracks';
 import TopArtists from './components/TopArtists';
 import { isBottomOfElement } from './utils/index';
+import CustomInput from './components/CustomInput/CustomInput';
+import MaterialButton from './components/MaterialButton/MaterialButton';
 
 class App extends Component {
   state = {
@@ -41,26 +43,30 @@ class App extends Component {
   getArtists({ user, page }) {
     lastfm.USER_GET_TOP_ARTISTS({ user, page })
       .then(data => {
-        const { topartists: { artist: artists, ['@attr']: attr } } = data;
-        artists.map(track => {
-          track.image = track.image[3]['#text'];
-          return track;
-        });
-        const newArtists = (this.state.artists[user] || []).concat(artists);
-        this.setState({ artists: { [user]: newArtists, attr: { [user]: attr } } });
+        if (data && data.topartists) {
+          const { topartists: { artist: artists, ['@attr']: attr } } = data;
+          artists.map(track => {
+            track.image = track.image[3]['#text'];
+            return track;
+          });
+          const newArtists = (this.state.artists[user] || []).concat(artists);
+          this.setState({ artists: { [user]: newArtists, attr: { [user]: attr } } });
+        }
       });
   }
 
   getTracks({ user, page }) {
     lastfm.USER_GET_LOVED_TRACKS({ user, page })
       .then(data => {
-        const { lovedtracks: { track: tracks, ['@attr']: attr } } = data;
-        tracks.map(track => {
-          track.image = track.image[3]['#text'];
-          return track;
-        });
-        const newTracks = (this.state.tracks[user] || []).concat(tracks);
-        this.setState({ user, tracks: { [user]: newTracks, attr: { [user]: attr } } });
+        if (data && data.lovedtracks) {
+          const { lovedtracks: { track: tracks, ['@attr']: attr } } = data;
+          tracks.map(track => {
+            track.image = track.image[3]['#text'];
+            return track;
+          });
+          const newTracks = (this.state.tracks[user] || []).concat(tracks);
+          this.setState({ user, tracks: { [user]: newTracks, attr: { [user]: attr } } });
+        }
       });
   }
 
@@ -76,14 +82,16 @@ class App extends Component {
 
   renderTabs() {
     const { user, tab, tabs, tracks, artists } = this.state;
-    const {name} = tabs[tab];
+    const { name } = tabs[tab];
     return (
       <div>
-        {tabs.map((e, i) =>
-          <a onClick={() => this.handleClick(i)} key={e.name}>
-            <h5 className={name === e.name ? 'active' : null}>{e.name}</h5>
-          </a>
-        )}
+        <div className="tabs">
+          {tabs.map((e, i) =>
+            <a className="tab" onClick={() => this.handleClick(i)} key={e.name}>
+              <h5 className={name === e.name ? 'active' : null}>{e.name}</h5>
+            </a>
+          )}
+        </div>
         <div ref={(scrollable) => this.scrollable = scrollable} onScroll={this.handleScroll} className="scrollable">
           {name === 'LovedTracks' ?
             <LovedTracks items={tracks[user]}/>
@@ -103,18 +111,37 @@ class App extends Component {
   }
 
   onSubmit() {
-    this.getData({ user: this.state.name });
+    const { name } = this.state;
+    if (name) {
+      this.getData({ user: this.state.name });
+    }
+  }
+
+// <input
+// name="name"
+// type="text"
+// onChange={this.handleChange}
+// />
+  renderUsername() {
+    const { user } = this.state;
+    const url = `https://last.fm/user/${user}`;
+    return (
+      <div className="user">
+        <a href={url}>
+          <span>{this.state.user}</span>
+        </a>
+      </div>
+    );
   }
 
   renderHeader() {
     return (
       <div>
-        <input
-          name="name"
-          type="text"
-          onChange={this.handleChange}
-        />
-        <span onClick={this.onSubmit}>go</span>
+        <div className="form">
+          <CustomInput className="search" name="name" type="text" onChange={this.handleChange}/>
+          <MaterialButton className="submit" onClick={this.onSubmit}>Let's go</MaterialButton>
+          {this.renderUsername()}
+        </div>
       </div>
     );
   }

@@ -1,0 +1,14 @@
+.btn {
+  min-width: 50px;
+  min-height: 20px;
+  max-width: 75px;
+  padding: 0 5px;
+  font-size: 14px;
+  overflow: hidden;
+  color: #000;
+  transition: background-color 0.3s;
+}
+
+.btn:hover, .btn:focus {
+  background-color: #eee;
+}
