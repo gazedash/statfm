@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
 import lastfm from './api/last_fm';
 import './App.css';
 import LovedTracks from './components/LovedTracks/LovedTracks';
@@ -11,7 +11,8 @@ class App extends Component {
     user: null,
     tracks: { [null]: [] },
     artists: { [null]: [] },
-    tab: {name: 'TopArtists', value: 'artists'},
+    tab: 1,
+    tabs: [{ name: 'LovedTracks', value: 'tracks' }, { name: 'TopArtists', value: 'artists' }],
   };
 
   handleChange = this.handleChange.bind(this);
@@ -20,14 +21,15 @@ class App extends Component {
 
   handleScroll() {
     if (isBottomOfElement(this.scrollable)) {
-      const {tab: {value}, user} = this.state;
+      const { tab, tabs, user } = this.state;
+      const { value } = tabs[tab];
       const attr = this.state[value].attr[user];
-      const {page, totalPages} = attr;
+      const { page, totalPages } = attr;
       const shouldFetch = page !== totalPages;
       if (shouldFetch) {
-        const params = {user, page: parseInt(page) + 1 };
+        const params = { user, page: parseInt(page) + 1 };
         if (value === 'artists') {
-          this.getArtists(params)
+          this.getArtists(params);
         }
         if (value === 'tracks') {
           this.getTracks(params);
@@ -36,7 +38,7 @@ class App extends Component {
     }
   }
 
-  getArtists({user, page}) {
+  getArtists({ user, page }) {
     lastfm.USER_GET_TOP_ARTISTS({ user, page })
       .then(data => {
         const { topartists: { artist: artists, ['@attr']: attr } } = data;
@@ -49,7 +51,7 @@ class App extends Component {
       });
   }
 
-  getTracks({user, page}) {
+  getTracks({ user, page }) {
     lastfm.USER_GET_LOVED_TRACKS({ user, page })
       .then(data => {
         const { lovedtracks: { track: tracks, ['@attr']: attr } } = data;
@@ -62,10 +64,10 @@ class App extends Component {
       });
   }
 
-  getData({user, page}) {
+  getData({ user, page }) {
     this.setState({ user, tracks: { [user]: [] }, artists: { [user]: [] } });
-    this.getTracks({user, page});
-    this.getArtists({user, page})
+    this.getTracks({ user, page });
+    this.getArtists({ user, page });
   }
 
   handleClick(tab) {
@@ -73,16 +75,17 @@ class App extends Component {
   }
 
   renderTabs() {
-    const { user, tab, tracks, artists } = this.state;
+    const { user, tab, tabs, tracks, artists } = this.state;
+    const {name} = tabs[tab];
     return (
       <div>
-        {[{name: 'LovedTracks', value: 'tracks'}, {name: 'TopArtists', value: 'artists'}].map((e) =>
-          <a onClick={() => this.handleClick(e)} key={e.name}>
-            <h5 className={tab.name === e.name ? 'active' : null}>{e.name}</h5>
+        {tabs.map((e, i) =>
+          <a onClick={() => this.handleClick(i)} key={e.name}>
+            <h5 className={name === e.name ? 'active' : null}>{e.name}</h5>
           </a>
         )}
         <div ref={(scrollable) => this.scrollable = scrollable} onScroll={this.handleScroll} className="scrollable">
-          {tab.name === 'LovedTracks' ?
+          {name === 'LovedTracks' ?
             <LovedTracks items={tracks[user]}/>
             : <TopArtists items={artists[user]}>123</TopArtists>
           }
@@ -100,18 +103,26 @@ class App extends Component {
   }
 
   onSubmit() {
-    this.getData({user: this.state.name});
+    this.getData({ user: this.state.name });
   }
 
-  render() {
+  renderHeader() {
     return (
-      <div ref={node => this.node = node} className="App">
+      <div>
         <input
           name="name"
           type="text"
           onChange={this.handleChange}
         />
         <span onClick={this.onSubmit}>go</span>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className="App">
+        {this.renderHeader()}
         {this.renderTabs()}
       </div>
     );
