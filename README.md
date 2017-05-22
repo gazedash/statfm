@@ -1,5 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
+This application is built to quickly share your musical taste, in visual way
+
 ## Project Setup
 
 ``` bash
