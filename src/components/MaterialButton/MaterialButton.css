@@ -1,4 +1,4 @@
-.btn {
+.material-button {
   min-width: 50px;
   min-height: 20px;
   max-width: 75px;
@@ -9,6 +9,6 @@
   transition: background-color 0.3s;
 }
 
-.btn:hover, .btn:focus {
+.material-button:hover, .material-button:focus {
   background-color: #eee;
 }

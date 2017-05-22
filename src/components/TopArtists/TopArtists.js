@@ -1,14 +1,13 @@
-import React, {
-  Component,
-} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Artist from './Artist';
+import Artist from '../Artist';
+import './TopArtists.css';
 
 class TopArtists extends Component {
   renderList() {
     const { items } = this.props;
     return (
-      <div>
+      <div className="topartists">
         {items.map(item =>
           <Artist
             key={item.url}

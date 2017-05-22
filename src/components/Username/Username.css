@@ -1,0 +1,6 @@
+.username {
+  flex: 1;
+  align-self: center;
+  text-align: right;
+  padding-right: 10px;
+}

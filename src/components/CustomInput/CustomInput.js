@@ -5,7 +5,7 @@ import './CustomInput.css';
 class CustomInput extends Component {
   render() {
     return (
-      <div className="group">
+      <div className="custom-input-root">
         <input
           spellCheck={false}
           className="custom-input"
@@ -13,8 +13,7 @@ class CustomInput extends Component {
           type={this.props.type}
           onChange={this.props.onChange}
         />
-        <span className="highlight"/>
-        <span className="bar"/>
+        <span className="custom-input-bar"/>
         <label>Name</label>
       </div>
     );

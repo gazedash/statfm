@@ -1,36 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Image from './Image/Image';
+import Title from './Title/Title';
+import GridElement from './GridElement/GridElement';
+import BlackUnstyledLink from './UnstyledLink/BlackUnstyledLink'
 
 class Artist extends Component {
-  renderImage() {
-    const { image } = this.props;
-
-    return (
-      <div className="image">
-        <img className="image" src={image}/>
-      </div>
-    );
-  }
-
-  renderTitle() {
-    const { title } = this.props;
-
-    return (
-      <span className="title">
-        {title}
-      </span>
-    );
-  }
-
   render() {
     return (
-      <div className="root">
-        <a href={this.props.url}>
-          {this.renderImage()}
-          {this.renderTitle()}
-        </a>
-      </div>
-    )
+      <GridElement>
+        <BlackUnstyledLink href={this.props.url}>
+          <div>
+            <Image title={this.props.title} image={this.props.image}/>
+          </div>
+        </BlackUnstyledLink>
+      </GridElement>
+    );
   }
 }
 

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Track from '../Track/Track';
-import './LovedTracks.css'
+import './LovedTracks.css';
 
 class LovedTracks extends Component {
   renderList() {
     const { items } = this.props;
     return (
-      <div>
+      <div className="lovedtracks">
         {items.map(item =>
           <Track
             key={item.url}
@@ -24,7 +24,7 @@ class LovedTracks extends Component {
 
   render() {
     return (
-      <div className="lovedtracks">
+      <div>
         {this.renderList()}
       </div>
     );

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './MaterialButton.css'
 
 class MaterialButton extends Component {
-  className = `${this.props.className} btn`;
+  className = `${this.props.className} material-button`;
   render() {
     return (
       <div

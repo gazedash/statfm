@@ -1,4 +1,4 @@
-.group {
+.custom-input-root {
   position: relative;
 }
 
@@ -34,13 +34,13 @@
 }
 
 /* BOTTOM BARS ================================= */
-.bar {
+.custom-input-bar {
   position: relative;
   display: block;
   width: 250px;
 }
 
-.bar:before, .bar:after {
+.custom-input-bar:before, .custom-input-bar:after {
   content: '';
   height: 2px;
   width: 0;
@@ -52,16 +52,16 @@
   -webkit-transition: 0.2s ease all;
 }
 
-.bar:before {
+.custom-input-bar:before {
   left: 50%;
 }
 
-.bar:after {
+.custom-input-bar:after {
   right: 50%;
 }
 
 /* active state */
-.custom-input:focus ~ .bar:before, .custom-input:focus ~ .bar:after {
+.custom-input:focus ~ .custom-input-bar:before, .custom-input:focus ~ .custom-input-bar:after {
   width: 55%;
 }
 

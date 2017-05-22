@@ -1,49 +1,32 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './Track.css'
+import Image from '../Image/Image';
+import Title from '../Title/Title';
+import GridElement from '../GridElement/GridElement';
+import BlackUnstyledLink from '../UnstyledLink/BlackUnstyledLink'
 
 class Track extends Component {
-  renderImage() {
-    const { image } = this.props;
-
-    return (
-      <div className="image">
-        <img src={image}/>
-      </div>
-    );
-  }
-
   renderArtist() {
     const { artist, artistUrl } = this.props;
 
     return (
-      <a href={artistUrl}>
-        <span className="title">
-          {artist}
-        </span>
-      </a>
-    );
-  }
-
-  renderTitle() {
-    const { title } = this.props;
-
-    return (
-      <div className="title">
-        {title}
-      </div>
+      <BlackUnstyledLink href={artistUrl}>
+        <Title title={artist}/>
+      </BlackUnstyledLink>
     );
   }
 
   render() {
     return (
-      <div className="root">
-        {this.renderArtist()}
-        <a href={this.props.url}>
-          {this.renderImage()}
-          {this.renderTitle()}
-        </a>
-      </div>
+      <GridElement>
+        <div>
+          <BlackUnstyledLink href={this.props.url}>
+            <div>
+              <Image title={`${this.props.artist} - ${this.props.title}`} image={this.props.image}/>
+            </div>
+          </BlackUnstyledLink>
+        </div>
+      </GridElement>
     );
   }
 }
