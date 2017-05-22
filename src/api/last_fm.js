@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { fetchWrapper } from './common';
 import { paramsToString } from '../utils/index';
+import SECRET from './secret';
 export const LAST_FM = 'https://ws.audioscrobbler.com';
 export const API_VERSION = '2.0';
 
@@ -9,7 +10,7 @@ export const methods = {
     USER_GET_TOP_ARTISTS: 'user.getTopArtists',
 };
 
-export const API_KEY = localStorage.token || 'TODAY_LISTEN';
+export const API_KEY = localStorage.token || SECRET;
 
 export class LastFm {
     constructor({ api_key, version }) {
