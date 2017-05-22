@@ -3,7 +3,7 @@
 }
 
 .scrollable {
-  height: 84vh;
+  height: calc(100vh - 102px);
   overflow-y: scroll;
 }
 
