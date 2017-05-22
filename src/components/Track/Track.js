@@ -26,7 +26,7 @@ class Track extends Component {
         <div>
           {this.renderArtist()}
           <BlackUnstyledLink title={this.trackFullName} href={this.props.url}>
-            <div>
+            <div className="track-container">
               <Image image={this.props.image}/>
             </div>
           </BlackUnstyledLink>

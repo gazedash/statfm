@@ -5,3 +5,7 @@
 .track-left {
   text-align: left;
 }
+
+.track-container {
+  padding: 0px 6px;
+}
