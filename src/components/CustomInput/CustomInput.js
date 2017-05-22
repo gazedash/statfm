@@ -7,6 +7,7 @@ class CustomInput extends Component {
     return (
       <div className="custom-input-root">
         <input
+          onKeyPress={this.props.onKeyPress}
           spellCheck={false}
           className="custom-input"
           name={this.props.name}
@@ -24,6 +25,7 @@ CustomInput.propTypes = {
   name: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  onKeyPress: PropTypes.func.isRequired,
 };
 CustomInput.defaultProps = {};
 

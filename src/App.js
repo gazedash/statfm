@@ -28,6 +28,7 @@ class App extends Component {
 
 
   handleChange = this.handleChange.bind(this);
+  handleKeyPress = this.handleKeyPress.bind(this);
   handleClick = this.handleClick.bind(this);
   handleScroll = debounce(this.handleScroll.bind(this), 500);
   handleSubmit = this.handleSubmit.bind(this);
@@ -106,11 +107,18 @@ class App extends Component {
     }
   }
 
+  handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      this.handleSubmit();
+    }
+  }
+
   renderHeader() {
     return (
       <div>
         <div className="form">
           <CustomInput
+            onKeyPress={this.handleKeyPress}
             className="search"
             name="name"
             type="text"
