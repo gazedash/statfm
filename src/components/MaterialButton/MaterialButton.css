@@ -1,4 +1,5 @@
 .material-button {
+  cursor: pointer;
   min-width: 50px;
   min-height: 20px;
   max-width: 75px;
