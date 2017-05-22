@@ -3,8 +3,3 @@
   height: 300px;
   display: block;
 }
-
-.image-root {
-  display: inline-block;
-  z-index: 1;
-}

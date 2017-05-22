@@ -5,7 +5,7 @@ import './Image.css';
 class Image extends Component {
   render() {
     return (
-      <div class="image-root">
+      <div className="image-root">
         <img className="image" src={this.props.image}/>
       </div>
     );
