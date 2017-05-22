@@ -8,6 +8,8 @@
 }
 
 .form {
+  background-color: #fbfbfb;
+  padding-bottom: 10px;
   display: flex;
 }
 

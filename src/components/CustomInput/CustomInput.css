@@ -1,4 +1,6 @@
 .custom-input-root {
+  margin-top: 10px;
+  margin-left: 20px;
   position: relative;
 }
 
@@ -53,11 +55,11 @@
 }
 
 .custom-input-bar:before {
-  left: 50%;
+  left: 54%;
 }
 
 .custom-input-bar:after {
-  right: 50%;
+  right: 45%;
 }
 
 /* active state */
