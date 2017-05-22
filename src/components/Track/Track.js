@@ -4,14 +4,18 @@ import Image from '../Image/Image';
 import Title from '../Title/Title';
 import GridElement from '../GridElement/GridElement';
 import BlackUnstyledLink from '../UnstyledLink/BlackUnstyledLink'
+import './Track.css';
 
 class Track extends Component {
+  trackFullName = `${this.props.artist} - ${this.props.title}`;
+
   renderArtist() {
-    const { artist, artistUrl } = this.props;
+    const { artistUrl } = this.props;
 
     return (
       <BlackUnstyledLink href={artistUrl}>
-        <Title title={artist}/>
+        <Title className="track-left" title={this.props.artist}/>
+        <Title className="track-title track-left" title={this.props.title}/>
       </BlackUnstyledLink>
     );
   }
@@ -20,9 +24,10 @@ class Track extends Component {
     return (
       <GridElement>
         <div>
-          <BlackUnstyledLink href={this.props.url}>
+          {this.renderArtist()}
+          <BlackUnstyledLink title={this.trackFullName} href={this.props.url}>
             <div>
-              <Image title={`${this.props.artist} - ${this.props.title}`} image={this.props.image}/>
+              <Image image={this.props.image}/>
             </div>
           </BlackUnstyledLink>
         </div>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Artist from '../Artist';
+import Artist from '../Artist/Artist';
 import './TopArtists.css';
 
 class TopArtists extends Component {

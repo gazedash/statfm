@@ -8,6 +8,7 @@ class UnstyledLink extends Component {
   render() {
     return (
       <a
+        title={this.props.title}
         rel="noopener noreferrer"
         target="_blank"
         style={this.props.style}
@@ -21,12 +22,14 @@ class UnstyledLink extends Component {
 }
 
 UnstyledLink.propTypes = {
+  title: PropTypes.string,
   children: PropTypes.node,
   href: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
 };
 UnstyledLink.defaultProps = {
+  title: '',
   className: '',
   style: {},
   href: '',

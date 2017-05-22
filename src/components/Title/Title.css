@@ -1,4 +1,15 @@
+.title-root {
+  position: relative;
+  display: flex;
+}
+
 .title {
-  overflow: hidden;
+  display: inline-block;
   white-space: nowrap;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.95);
+  /*background-color: rgba(0, 0, 0, 0.8);*/
+  width: 300px;
+  color: black;
+  /*color: white;*/
 }

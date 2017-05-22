@@ -6,7 +6,7 @@ class Image extends Component {
   render() {
     return (
       <div class="image-root">
-        <img title={this.props.title} className="image" src={this.props.image}/>
+        <img className="image" src={this.props.image}/>
       </div>
     );
   }
