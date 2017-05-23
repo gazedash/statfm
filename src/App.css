@@ -3,8 +3,12 @@
 }
 
 .scrollable {
-  height: calc(100vh - 102px);
+  height: calc(100vh - 120px);
   overflow-y: scroll;
+}
+
+.periods {
+  margin-top: 7px;
 }
 
 .form {
