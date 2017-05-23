@@ -4,9 +4,10 @@ import Tab from '../Tab/Tab';
 import './Tabs.css';
 
 class Tabs extends Component {
+  className = `${this.props.className} tabs`;
   render() {
     return (
-      <div className="tabs">
+      <div className={this.className}>
         {this.props.items.map((e, i) =>
           <Tab
             key={e}
@@ -20,11 +21,13 @@ class Tabs extends Component {
 }
 
 Tabs.propTypes = {
+  className: PropTypes.string,
   onClick: PropTypes.func.isRequired,
   items: PropTypes.array.isRequired,
   activeTab: PropTypes.string,
 };
 Tabs.defaultProps = {
+  className: '',
   activeTab: '',
 };
 
