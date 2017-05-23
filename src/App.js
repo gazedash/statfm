@@ -9,6 +9,7 @@ import CustomInput from './components/CustomInput/CustomInput';
 import MaterialButton from './components/MaterialButton/MaterialButton';
 import Username from './components/Username/Username';
 import Tabs from './components/Tabs/Tabs';
+import BlackUnstyledLink from './components/UnstyledLink/BlackUnstyledLink';
 
 class App extends Component {
   state = {
@@ -23,6 +24,138 @@ class App extends Component {
       { name: 'Week', value: '7day' },
       { name: 'Month', value: '1month' }],
   };
+
+  componentWillMount() {
+    const { pathname } = window.location;
+    if (pathname !== '/') {
+      this.getData({ user: pathname.substr(1) });
+    }
+  }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize);
+    window.addEventListener('scroll', this.handleScroll);
+    this.setState({ height: document.querySelector('.fixed').scrollHeight });
+  }
+
+  handleChange = this.handleChange.bind(this);
+  handleKeyPress = this.handleKeyPress.bind(this);
+  handleClick = this.handleClick.bind(this);
+  handlePeriodClick = this.handlePeriodClick.bind(this);
+  handleScroll = debounce(this.handleScroll.bind(this), 500);
+  handleSubmit = this.handleSubmit.bind(this);
+  handleResize = this.handleResize.bind(this);
+
+  handleClick(tab) {
+    this.setState({ tab });
+  }
+
+  handlePeriodClick(period) {
+    const { user, periods } = this.state;
+    this.setState({ period });
+    const { value } = periods[period];
+    if (user) {
+      this.getArtists({ user, period: value });
+    }
+  }
+
+  handleChange(event) {
+    const { value, name } = event.target;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  handleScroll() {
+    if (isBottomOfElement(this.scrollable)) {
+      const { user } = this.state;
+      const value = this.activeTabValue;
+      let attr = this.attrByUser;
+      if (value === 'artists') {
+        attr = attr[this.periodValue];
+      }
+      const { page, totalPages } = attr;
+      const shouldFetch = page !== totalPages;
+      if (shouldFetch) {
+        const params = { user, page: parseInt(page, 10) + 1 };
+        if (value === 'artists') {
+          this.getArtists(params);
+        }
+        if (value === 'tracks') {
+          this.getTracks(params);
+        }
+      }
+    }
+  }
+
+  handleSubmit() {
+    const { name } = this.state;
+    if (name) {
+      this.getData({ user: this.state.name });
+    }
+  }
+
+  handleResize() {
+    this.setState({ height: document.querySelector('.fixed').scrollHeight });
+  }
+
+  handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      this.handleSubmit();
+    }
+  }
+
+  getArtists({ user, page, period }) {
+    let value = period ? period : this.periodValue;
+    lastfm.USER_GET_TOP_ARTISTS({ user, page, period: value })
+      .then(data => {
+        if (data && data.topartists) {
+          const { topartists: { artist: artists, '@attr': attr } } = data;
+          artists.map(track => {
+            track.image = track.image[3]['#text'];
+            return track;
+          });
+          // const newArtists = (this.state.artists[user] || []).concat(artists);
+          const newArtists = (this.getArtistsByUserAndPeriod(user, value) || []).concat(artists);
+          // this.setState({ artists: { [user]: newArtists, attr: { [user]: attr } } });
+          this.setState({
+            artists: {
+              [user]: {
+                [value]: newArtists
+              },
+              attr: {
+                [user]: {
+                  [value]: attr
+                }
+              }
+            }
+          });
+        }
+      });
+  }
+
+  getTracks({ user, page }) {
+    lastfm.USER_GET_LOVED_TRACKS({ user, page })
+      .then(data => {
+        if (data && data.lovedtracks) {
+          const { lovedtracks: { track: tracks, '@attr': attr } } = data;
+          tracks.map(track => {
+            track.image = track.image[3]['#text'];
+            return track;
+          });
+          const newTracks = (this.getTracksByUser(user) || []).concat(tracks);
+          this.setState({ user, tracks: { [user]: newTracks, attr: { [user]: attr } } });
+        }
+      });
+  }
+
+  getData({ user, page }) {
+    const value = this.periodValue;
+    this.setState({ user, tracks: { [user]: [] }, artists: { [user]: { [value]: [] } } });
+    this.getTracks({ user, page });
+    this.getArtists({ user, page });
+  }
 
   get period() {
     const { periods, period } = this.state;
@@ -94,155 +227,32 @@ class App extends Component {
     return tab === 0;
   }
 
-  getArtistsByUserAndPeriod (user, period) {
-    return this.state.artists[user][period]
+  getArtistsByUserAndPeriod(user, period) {
+    return this.state.artists[user][period];
   }
 
-  getTracksByUser (user) {
+  getTracksByUser(user) {
     return this.state.tracks[user];
-  }
-
-  componentWillMount() {
-    const { pathname } = window.location;
-    if (pathname !== '/') {
-      this.getData({ user: pathname.substr(1) });
-    }
-  }
-
-  handleChange = this.handleChange.bind(this);
-  handleKeyPress = this.handleKeyPress.bind(this);
-  handleClick = this.handleClick.bind(this);
-  handlePeriodClick = this.handlePeriodClick.bind(this);
-  handleScroll = debounce(this.handleScroll.bind(this), 500);
-  handleSubmit = this.handleSubmit.bind(this);
-
-  getArtists({ user, page, period }) {
-    let value = period ? period : this.periodValue;
-    lastfm.USER_GET_TOP_ARTISTS({ user, page, period: value })
-      .then(data => {
-        if (data && data.topartists) {
-          const { topartists: { artist: artists, '@attr': attr } } = data;
-          artists.map(track => {
-            track.image = track.image[3]['#text'];
-            return track;
-          });
-          // const newArtists = (this.state.artists[user] || []).concat(artists);
-          const newArtists = (this.getArtistsByUserAndPeriod(user, value) || []).concat(artists);
-          // this.setState({ artists: { [user]: newArtists, attr: { [user]: attr } } });
-          this.setState({
-            artists: {
-              [user]: {
-                [value]: newArtists
-              },
-              attr: {
-                [user]: {
-                  [value]: attr
-                }
-              }
-            }
-          });
-        }
-      });
-  }
-
-  getTracks({ user, page }) {
-    lastfm.USER_GET_LOVED_TRACKS({ user, page })
-      .then(data => {
-        if (data && data.lovedtracks) {
-          const { lovedtracks: { track: tracks, '@attr': attr } } = data;
-          tracks.map(track => {
-            track.image = track.image[3]['#text'];
-            return track;
-          });
-          const newTracks = (this.getTracksByUser(user) || []).concat(tracks);
-          this.setState({ user, tracks: { [user]: newTracks, attr: { [user]: attr } } });
-        }
-      });
-  }
-
-  getData({ user, page }) {
-    const value = this.periodValue;
-    this.setState({ user, tracks: { [user]: [] }, artists: { [user]: { [value]: [] } } });
-    this.getTracks({ user, page });
-    this.getArtists({ user, page });
-  }
-
-  handleClick(tab) {
-    this.setState({ tab });
-  }
-
-  handlePeriodClick(period) {
-    const { user, periods } = this.state;
-    this.setState({ period });
-    const { value } = periods[period];
-    if (user) {
-      this.getArtists({ user, period: value });
-    }
-  }
-
-  handleChange(event) {
-    const { value, name } = event.target;
-
-    this.setState({
-      [name]: value
-    });
-  }
-
-  handleScroll() {
-    if (isBottomOfElement(this.scrollable)) {
-      const { user } = this.state;
-      const value = this.activeTabValue;
-      let attr = this.attrByUser;
-      if (value === 'artists') {
-        attr = attr[this.periodValue];
-      }
-      const { page, totalPages } = attr;
-      const shouldFetch = page !== totalPages;
-      if (shouldFetch) {
-        const params = { user, page: parseInt(page, 10) + 1 };
-        if (value === 'artists') {
-          this.getArtists(params);
-        }
-        if (value === 'tracks') {
-          this.getTracks(params);
-        }
-      }
-    }
-  }
-
-  handleSubmit() {
-    const { name } = this.state;
-    if (name) {
-      this.getData({ user: this.state.name });
-    }
-  }
-
-  handleKeyPress(e) {
-    if (e.key === 'Enter') {
-      this.handleSubmit();
-    }
   }
 
   renderHeader() {
     return (
-      <div>
-        <div className="form">
-          <CustomInput
-            onKeyPress={this.handleKeyPress}
-            className="search"
-            name="name"
-            type="text"
-            onChange={this.handleChange}
-          />
-          <MaterialButton
-            className="submit"
-            onClick={this.handleSubmit}
-          >
-            Let's go
-          </MaterialButton>
-          {this.renderPeriod()}
-          {this.renderUser()}
-        </div>
+      <div className="form">
+        <CustomInput
+          onKeyPress={this.handleKeyPress}
+          className="search"
+          name="name"
+          type="text"
+          onChange={this.handleChange}
+        />
+        <MaterialButton
+          className="submit"
+          onClick={this.handleSubmit}
+        >
+          Let's go
+        </MaterialButton>
+        {this.renderPeriod()}
+        {this.renderUser()}
       </div>
     );
   }
@@ -269,7 +279,7 @@ class App extends Component {
 
   renderTabs() {
     return (
-      <div>
+      <div className="app-tabs">
         <Tabs
           onClick={this.handleClick}
           items={this.tabNames}
@@ -284,6 +294,7 @@ class App extends Component {
         ref={(scrollable) => this.scrollable = scrollable}
         onScroll={this.handleScroll}
         className="scrollable"
+        style={{ paddingTop: this.state.height }}
       >
         {this.isCurrentTab ?
           <LovedTracks items={this.tracksByUser}/>
@@ -296,9 +307,16 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {this.renderHeader()}
-        {this.renderTabs()}
+        <div className="fixed">
+          {this.renderHeader()}
+          {this.renderTabs()}
+        </div>
         {this.renderContent()}
+        <BlackUnstyledLink
+          className="footer"
+          href="https://github.com/shoegazerwithak/statfm">
+          GitHub
+        </BlackUnstyledLink>
       </div>
     );
   }
