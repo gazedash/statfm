@@ -17,24 +17,108 @@ class App extends Component {
     artists: { [null]: [] },
     tab: 1,
     tabs: [{ name: 'LovedTracks', value: 'tracks' }, { name: 'TopArtists', value: 'artists' }],
+    period: 0,
+    periods: [
+      { name: 'Overall', value: 'overall' },
+      { name: 'Week', value: '7day' },
+      { name: 'Month', value: '1month' }],
   };
 
+  get period() {
+    const { periods, period } = this.state;
+    return periods[period];
+  }
+
+  get attrByPeriodValue() {
+    const { attr } = this.state;
+    return attr[this.periodValue];
+  }
+
+  get attrByUser() {
+    const { user } = this.state;
+    return this.state[this.activeTabValue].attr[user];
+  }
+
+  get periodValue() {
+    return this.period.value;
+  }
+
+  get tracksByUser() {
+    const { tracks, user } = this.state;
+    return tracks[user];
+  }
+
+  get artistsByUser() {
+    const { artists, user } = this.state;
+    return artists[user];
+  }
+
+  get artistsByUserAndPeriod() {
+    return this.artistsByUser[this.periodValue];
+  }
+
+  get activePeriod() {
+    const { periods, period } = this.state;
+    return periods[period];
+  }
+
+  get activePeriodName() {
+    return this.activePeriod.name;
+  }
+
+  get periodNames() {
+    const { periods } = this.state;
+    return periods.map((e) => e.name);
+  }
+
+  get tabNames() {
+    const { tabs } = this.state;
+    return tabs.map((e) => e.name);
+  }
+
+  get activeTab() {
+    const { tab, tabs } = this.state;
+    return tabs[tab];
+  }
+
+  get activeTabValue() {
+    return this.activeTab.value;
+  }
+
+  get activeTabName() {
+    return this.activeTab.name;
+  }
+
+  get isCurrentTab() {
+    const { tab } = this.state;
+    return tab === 0;
+  }
+
+  getArtistsByUserAndPeriod (user, period) {
+    return this.state.artists[user][period]
+  }
+
+  getTracksByUser (user) {
+    return this.state.tracks[user];
+  }
+
   componentWillMount() {
-    const {pathname} = window.location;
+    const { pathname } = window.location;
     if (pathname !== '/') {
       this.getData({ user: pathname.substr(1) });
     }
   }
 
-
   handleChange = this.handleChange.bind(this);
   handleKeyPress = this.handleKeyPress.bind(this);
   handleClick = this.handleClick.bind(this);
+  handlePeriodClick = this.handlePeriodClick.bind(this);
   handleScroll = debounce(this.handleScroll.bind(this), 500);
   handleSubmit = this.handleSubmit.bind(this);
 
-  getArtists({ user, page }) {
-    lastfm.USER_GET_TOP_ARTISTS({ user, page })
+  getArtists({ user, page, period }) {
+    let value = period ? period : this.periodValue;
+    lastfm.USER_GET_TOP_ARTISTS({ user, page, period: value })
       .then(data => {
         if (data && data.topartists) {
           const { topartists: { artist: artists, '@attr': attr } } = data;
@@ -42,8 +126,21 @@ class App extends Component {
             track.image = track.image[3]['#text'];
             return track;
           });
-          const newArtists = (this.state.artists[user] || []).concat(artists);
-          this.setState({ artists: { [user]: newArtists, attr: { [user]: attr } } });
+          // const newArtists = (this.state.artists[user] || []).concat(artists);
+          const newArtists = (this.getArtistsByUserAndPeriod(user, value) || []).concat(artists);
+          // this.setState({ artists: { [user]: newArtists, attr: { [user]: attr } } });
+          this.setState({
+            artists: {
+              [user]: {
+                [value]: newArtists
+              },
+              attr: {
+                [user]: {
+                  [value]: attr
+                }
+              }
+            }
+          });
         }
       });
   }
@@ -57,20 +154,30 @@ class App extends Component {
             track.image = track.image[3]['#text'];
             return track;
           });
-          const newTracks = (this.state.tracks[user] || []).concat(tracks);
+          const newTracks = (this.getTracksByUser(user) || []).concat(tracks);
           this.setState({ user, tracks: { [user]: newTracks, attr: { [user]: attr } } });
         }
       });
   }
 
   getData({ user, page }) {
-    this.setState({ user, tracks: { [user]: [] }, artists: { [user]: [] } });
+    const value = this.periodValue;
+    this.setState({ user, tracks: { [user]: [] }, artists: { [user]: { [value]: [] } } });
     this.getTracks({ user, page });
     this.getArtists({ user, page });
   }
 
   handleClick(tab) {
     this.setState({ tab });
+  }
+
+  handlePeriodClick(period) {
+    const { user, periods } = this.state;
+    this.setState({ period });
+    const { value } = periods[period];
+    if (user) {
+      this.getArtists({ user, period: value });
+    }
   }
 
   handleChange(event) {
@@ -83,9 +190,12 @@ class App extends Component {
 
   handleScroll() {
     if (isBottomOfElement(this.scrollable)) {
-      const { tab, tabs, user } = this.state;
-      const { value } = tabs[tab];
-      const attr = this.state[value].attr[user];
+      const { user } = this.state;
+      const value = this.activeTabValue;
+      let attr = this.attrByUser;
+      if (value === 'artists') {
+        attr = attr[this.periodValue];
+      }
       const { page, totalPages } = attr;
       const shouldFetch = page !== totalPages;
       if (shouldFetch) {
@@ -130,44 +240,54 @@ class App extends Component {
           >
             Let's go
           </MaterialButton>
+          {this.renderPeriod()}
           {this.renderUser()}
         </div>
       </div>
     );
   }
 
+  renderPeriod() {
+    if (!this.isCurrentTab) {
+      return (
+        <Tabs
+          className="periods"
+          onClick={this.handlePeriodClick}
+          items={this.periodNames}
+          activeTab={this.activePeriodName}/>
+      );
+    }
+    return null;
+  }
+
   renderUser() {
     if (this.state.user) {
-      return <Username user={this.state.user}/>
+      return <Username user={this.state.user}/>;
     }
     return null;
   }
 
   renderTabs() {
-    const { tab, tabs } = this.state;
-    const tabNames = tabs.map((e) => e.name);
-    const { name } = tabs[tab];
     return (
       <div>
-        <Tabs onClick={this.handleClick} items={tabNames} activeTab={name}/>
+        <Tabs
+          onClick={this.handleClick}
+          items={this.tabNames}
+          activeTab={this.activeTabName}/>
       </div>
     );
   }
 
   renderContent() {
-    const { user, tab, tabs, tracks, artists } = this.state;
-    const { name } = tabs[tab];
-    const condition = name === 'LovedTracks';
-
     return (
       <div
         ref={(scrollable) => this.scrollable = scrollable}
         onScroll={this.handleScroll}
         className="scrollable"
       >
-        {condition ?
-          <LovedTracks items={tracks[user]}/>
-          : <TopArtists items={artists[user]}/>
+        {this.isCurrentTab ?
+          <LovedTracks items={this.tracksByUser}/>
+          : <TopArtists items={this.artistsByUserAndPeriod}/>
         }
       </div>
     );
