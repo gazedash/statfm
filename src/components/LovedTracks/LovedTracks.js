@@ -32,8 +32,10 @@ class LovedTracks extends Component {
 }
 
 LovedTracks.propTypes = {
-  items: PropTypes.array.isRequired,
+  items: PropTypes.array,
 };
-LovedTracks.defaultProps = {};
+LovedTracks.defaultProps = {
+  items: [],
+};
 
 export default LovedTracks;

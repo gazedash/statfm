@@ -30,8 +30,10 @@ class TopArtists extends Component {
 }
 
 TopArtists.propTypes = {
-  items: PropTypes.array.isRequired,
+  items: PropTypes.array,
 };
-TopArtists.defaultProps = {};
+TopArtists.defaultProps = {
+  items: [],
+};
 
 export default TopArtists;
