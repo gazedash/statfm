@@ -2,6 +2,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 This application is built to quickly share your musical taste, in visual way
 
+![desktop](https://user-images.githubusercontent.com/11088992/30518962-17e2e3ea-9b94-11e7-9370-0a24cc3d1e91.png)
+![mobile](https://user-images.githubusercontent.com/11088992/30518969-2a7b24f4-9b94-11e7-84a5-b0a28a63c109.jpg)
+
 ## Project Setup
 
 ``` bash
